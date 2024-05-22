@@ -45,11 +45,17 @@ def get_areas_sort(
     else:
         query = query.order_by(asc(order_by_column))
 
-    areas = query.all()
+    query = query.offset(skip).limit(limit)
 
-    if areas == None:
-        raise HTTPException(status_code=404, detail="Area no encontrada")
+    try:
+        areas = query.all()
+        if areas == None:
+            raise HTTPException(status_code=404, detail="Area no encontrada")
+    except Exception as queryException:
+        raise HTTPException(status_code=500, detail=str(queryException))
+    
     return areas
+
 
 @router.get("/get-area/{id_area}", response_model=Area, status_code=200, description="Obtener área por el id")
 def get_area(id_area:int = Path(ge=1), db: Session = Depends(get_db)) -> Area:

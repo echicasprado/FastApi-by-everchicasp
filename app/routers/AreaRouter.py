@@ -1,11 +1,14 @@
 from fastapi import APIRouter, HTTPException, Path, Query, Depends
-from fastapi.responses import HTMLResponse
+from fastapi.responses import HTMLResponse, JSONResponse
 from typing import List, Optional
 from models.area.model import Area as AreaModel
 from models.area.shema import Area, AreaCreate
 from sqlalchemy.orm import Session
 from database import get_db
 from sqlalchemy import asc, desc
+from fastapi.encoders import jsonable_encoder
+
+HEADERS = {"Content-Type":"application/json","charset":"utf-8"}
 
 router = APIRouter(
     prefix="/areas",
@@ -13,23 +16,28 @@ router = APIRouter(
 )
 
 @router.get("/", status_code=200)
-def areas_home():
-    return HTMLResponse("<h1>Areas - info projects</h1>")
+async def areas_home():
+    content = {"message":"Areas - info projects"}
+    return JSONResponse(content=content, headers= HEADERS)
 
 @router.get("/get-areas-all", response_model=List[Area], status_code=200, description="Obtener todas las área", summary="Obtener todas las área")
-def get_areas(db: Session = Depends(get_db)):
+async def get_areas(db: Session = Depends(get_db)):
     areas = db.query(AreaModel).all()
-    return areas
+    content = [jsonable_encoder(area) for area in areas]
+    return JSONResponse(content=content, headers=HEADERS)
 
 @router.get("/get-areas", response_model=List[Area], status_code=200, description="Obtener todas las área disponibles", summary="Obtener todas las área disponibles")
-def get_areas(db: Session = Depends(get_db)):
+async def get_areas(db: Session = Depends(get_db)):
     areas = db.query(AreaModel).filter(AreaModel.id_estado == 1).all()
+
     if areas == None:
         raise HTTPException(status_code=404, detail="No hay áreas disponibles")
-    return areas
+    
+    content = [jsonable_encoder(area) for area in areas]
+    return JSONResponse(content=content, headers=HEADERS)
 
 @router.get("/get-areas-by", response_model=List[Area], status_code=200, description="Obtener todas las área disponibles con argumentos", summary="Obtener todas las área disponibles con argumentos")
-def get_areas_sort(
+async def get_areas_sort(
     skip: Optional[int] = Query(1,alias="skip", min = 1, max = 9),
     limit: Optional[int] = Query(10, alias="limit", min = 2, max = 10),
     sort_by: Optional[str] = Query("id_area", alias="sort_by"),
@@ -54,33 +62,37 @@ def get_areas_sort(
     except Exception as queryException:
         raise HTTPException(status_code=500, detail=str(queryException))
     
-    return areas
-
+    content = [jsonable_encoder(area) for area in areas]
+    return JSONResponse(content=content, headers=HEADERS)
 
 @router.get("/get-area/{id_area}", response_model=Area, status_code=200, description="Obtener área por el id")
-def get_area(id_area:int = Path(ge=1), db: Session = Depends(get_db)) -> Area:
+async def get_area(id_area:int = Path(ge=1), db: Session = Depends(get_db)):
     area = db.query(AreaModel).filter(AreaModel.id_area == id_area).first()
+    
     if area is None:
         raise HTTPException(status_code=404, detail="Area no encontrada")
-    return area
+    
+    return JSONResponse(content=jsonable_encoder(area), headers=HEADERS)
 
 @router.get("/get-area-by-name/", response_model= Area, status_code=200, summary="Obtener área por nombre")
-def get_area_by_name(name:str = Query(min_length=1, max_length=100), db: Session = Depends(get_db)):
+async def get_area_by_name(name:str = Query(min_length=1, max_length=100), db: Session = Depends(get_db)):
     area = db.query(AreaModel).filter(AreaModel.descripcion == name).first()
+
     if area == None:
         raise HTTPException(status_code=404, detail="Area no encontrada")
-    return area
+    
+    return JSONResponse(content=jsonable_encoder(area), headers=HEADERS)
 
 @router.post("/create-area", response_model=Area, status_code=201, description="Crear una nueva área", summary="Crear una nueva área")
-def create_area(area:AreaCreate, db: Session = Depends(get_db)) -> Area:
+async def create_area(area:AreaCreate, db: Session = Depends(get_db)):
     db_area = AreaModel(descripcion = area.descripcion)
     db.add(db_area)
     db.commit()
     db.refresh(db_area)
-    return db_area
+    return JSONResponse(content=jsonable_encoder(db_area), headers=HEADERS, status_code=201)
 
 @router.patch("/update-area/{id_area}", response_model=Area, status_code=200, description="Actualizar área", summary="Actualizar área")
-def update_area(id_area:int, area:AreaCreate, db: Session = Depends(get_db)):
+async def update_area(id_area:int, area:AreaCreate, db: Session = Depends(get_db)):
     db_area = db.query(AreaModel).filter(AreaModel.id_area == id_area).first()
 
     if db_area is None:
@@ -89,16 +101,18 @@ def update_area(id_area:int, area:AreaCreate, db: Session = Depends(get_db)):
     db_area.descripcion = area.descripcion
     db.commit()
     db.refresh(db_area)
-    return db_area
+
+    return JSONResponse(content=jsonable_encoder(db_area), headers=HEADERS, status_code=200)
         
 @router.delete("/delete-area/{id_area}", status_code=200, description="Eliminar área", summary="Eliminar área")
-def deleteArea(id_area:int = Path(ge=1), db: Session = Depends(get_db)):
+async def deleteArea(id_area:int = Path(ge=1), db: Session = Depends(get_db)):
     db_area = db.query(AreaModel).filter(AreaModel.id_area == id_area).first()
 
     if db_area is None:
-        raise HTTPException(status_code=404,detail="Area no encontrada")
+        raise HTTPException(status_code=404,detail="Área no encontrada")
     
     db_area.id_estado = 2
     db.commit()
     db.refresh(db_area)
-    return db_area
+
+    return JSONResponse(content={"message":f"Área: {db_area.descripcion}, se ha eliminado con éxito"}, headers=HEADERS, status_code=200)

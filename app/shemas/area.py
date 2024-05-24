@@ -5,7 +5,7 @@ from .estado import Estado
 class AreaBase(BaseModel):
     descripcion: str
 
-class AreaCreate(BaseModel):
+class AreaCreate(AreaBase):
     pass
 
 class Area(AreaBase):

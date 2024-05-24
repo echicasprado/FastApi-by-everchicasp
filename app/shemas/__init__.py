@@ -1,2 +1,2 @@
 from .area import Area, AreaCreate
-from .estado import Estado
+from .estado import Estado, EstadoEnum

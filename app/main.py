@@ -25,3 +25,4 @@ app.add_middleware(
 
 
 app.include_router(area_router)
+app.include_router(estado_router)

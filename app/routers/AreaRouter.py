@@ -1,16 +1,12 @@
 from fastapi import APIRouter, HTTPException, Path, Query, Depends
-from fastapi.responses import HTMLResponse, JSONResponse
+from fastapi.responses import JSONResponse
+from fastapi.encoders import jsonable_encoder
+from sqlalchemy.orm import Session
+from sqlalchemy import asc, desc
 from typing import List, Optional
-
-#from models.area.model import AreaModel
-#from models.area.shema import Area, AreaCreate
+from database import get_db
 
 from models import AreaModel, Area, AreaCreate
-
-from sqlalchemy.orm import Session
-from database import get_db
-from sqlalchemy import asc, desc
-from fastapi.encoders import jsonable_encoder
 
 HEADERS = {"Content-Type":"application/json","charset":"utf-8"}
 
@@ -27,6 +23,10 @@ async def areas_home():
 @router.get("/get-areas-all", response_model=List[Area], status_code=200, description="Obtener todas las área", summary="Obtener todas las área")
 async def get_areas(db: Session = Depends(get_db)):
     areas = db.query(AreaModel).all()
+
+    if areas == None:
+        return JSONResponse(content={"message":"No se puede obtener información"}, headers=HEADERS, status_code=500)
+
     content = [jsonable_encoder(area) for area in areas]
     header = HEADERS
     header["X-Total-Count"] = str(len(areas))

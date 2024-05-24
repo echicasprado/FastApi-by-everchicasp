@@ -6,4 +6,4 @@ class AreaModel(Base):
 
     id_area = Column(Integer, primary_key=True, index=True)
     descripcion = Column(String, index=True)
-    id_estado = Column(Integer, default=True)
+    id_estado = Column(Integer, default=1)

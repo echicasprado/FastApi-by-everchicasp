@@ -4,10 +4,10 @@ class EstadoBase(BaseModel):
     descripcion: str
 
 class EstadoCreate(BaseModel):
-    descripcion: str
+    pass
 
 class Estado(EstadoBase):
-    pass 
+    id_estado: int
 
     class Config:
         orm_mode = True

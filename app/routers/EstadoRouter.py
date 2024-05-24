@@ -6,7 +6,8 @@ from sqlalchemy import asc, desc
 from typing import List, Optional
 from database import get_db
 
-from models import EstadoModel, Estado
+from models import EstadoModel
+from shemas import Estado
 
 HEADERS = {"Content-Type":"application/json","charset":"utf-8"}
 

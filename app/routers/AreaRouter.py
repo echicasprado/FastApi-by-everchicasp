@@ -6,7 +6,8 @@ from sqlalchemy import asc, desc
 from typing import List, Optional
 from database import get_db
 
-from models import AreaModel, Area, AreaCreate, Estado
+from models import AreaModel
+from shemas import Area, AreaCreate, Estado
 
 HEADERS = {"Content-Type":"application/json","charset":"utf-8"}
 

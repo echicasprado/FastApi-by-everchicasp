@@ -1,6 +1,6 @@
 from pydantic import BaseModel
 from typing import Optional
-from ..estado.schema import Estado
+from .estado import Estado
 
 class AreaBase(BaseModel):
     descripcion: str

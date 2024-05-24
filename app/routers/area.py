@@ -2,12 +2,10 @@ from fastapi import APIRouter, HTTPException, Path, Query, Depends
 from fastapi.responses import JSONResponse
 from fastapi.encoders import jsonable_encoder
 from sqlalchemy.orm import Session
-from sqlalchemy import asc, desc
 from typing import List
 from database import get_db
 
-from models import AreaModel, EstadoModel
-from shemas import Area, AreaCreate, EstadoEnum
+from shemas import Area, AreaCreate
 from services import AreaServices
 
 HEADERS = {"Content-Type":"application/json","charset":"utf-8"}

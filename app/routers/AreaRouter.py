@@ -1,8 +1,12 @@
 from fastapi import APIRouter, HTTPException, Path, Query, Depends
 from fastapi.responses import HTMLResponse, JSONResponse
 from typing import List, Optional
-from models.area.model import Area as AreaModel
-from models.area.shema import Area, AreaCreate
+
+#from models.area.model import AreaModel
+#from models.area.shema import Area, AreaCreate
+
+from models import AreaModel, Area, AreaCreate
+
 from sqlalchemy.orm import Session
 from database import get_db
 from sqlalchemy import asc, desc
@@ -24,6 +28,8 @@ async def areas_home():
 async def get_areas(db: Session = Depends(get_db)):
     areas = db.query(AreaModel).all()
     content = [jsonable_encoder(area) for area in areas]
+    header = HEADERS
+    header["X-Total-Count"] = str(len(areas))
     return JSONResponse(content=content, headers=HEADERS)
 
 @router.get("/get-areas", response_model=List[Area], status_code=200, description="Obtener todas las área disponibles", summary="Obtener todas las área disponibles")
@@ -34,6 +40,8 @@ async def get_areas(db: Session = Depends(get_db)):
         raise HTTPException(status_code=404, detail="No hay áreas disponibles")
     
     content = [jsonable_encoder(area) for area in areas]
+    header = HEADERS
+    header["X-Total-Count"] = str(len(areas))
     return JSONResponse(content=content, headers=HEADERS)
 
 @router.get("/get-areas-by", response_model=List[Area], status_code=200, description="Obtener todas las área disponibles con argumentos", summary="Obtener todas las área disponibles con argumentos")
@@ -63,6 +71,8 @@ async def get_areas_sort(
         raise HTTPException(status_code=500, detail=str(queryException))
     
     content = [jsonable_encoder(area) for area in areas]
+    header = HEADERS
+    header["X-Total-Count"] = str(len(areas))
     return JSONResponse(content=content, headers=HEADERS)
 
 @router.get("/get-area/{id_area}", response_model=Area, status_code=200, description="Obtener área por el id")

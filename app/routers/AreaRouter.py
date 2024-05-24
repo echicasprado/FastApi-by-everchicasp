@@ -15,7 +15,7 @@ router = APIRouter(
     prefix="/areas",
     tags= ["Areas"]
 )
-
+#TODO search other way to make business logic
 @router.get("/", status_code=200)
 async def areas_home():
     content = {"message":"Areas - info projects"}
@@ -51,17 +51,16 @@ async def get_areas(db: Session = Depends(get_db)):
     header["X-Total-Count"] = str(len(areas))
     return JSONResponse(content=content, headers=HEADERS)
 
-# TODO buscar error, muestra que order_by_column no puede ser un list
-@router.get("/get-areas-by", response_model=List[Area], status_code=200, description="Obtener todas las área disponibles con argumentos", summary="Obtener todas las área disponibles con argumentos")
+@router.get("/get-areas-sort-by", response_model=List[Area], status_code=200, description="Obtener todas las área disponibles con argumentos", summary="Obtener todas las área disponibles con argumentos")
 async def get_areas_sort(
-    skip: Optional[int] = Query(1,alias="skip", min = 1, max = 9),
+    skip: Optional[int] = Query(1,alias="skip", min = 0, max = 9),
     limit: Optional[int] = Query(10, alias="limit", min = 2, max = 10),
     sort_by: Optional[str] = Query("id_area", alias="sort_by"),
     order: Optional[str] = Query("asc", alias="order", regex = "^(asc|desc)$", min_length = 3, max_length = 4), 
     db: Session = Depends(get_db)
     ):
     
-    query = db.query(AreaModel).filter(AreaModel.id_estado == EstadoEnum.ACTIVO).all()
+    query = db.query(AreaModel).filter(AreaModel.id_estado == EstadoEnum.ACTIVO)
     order_by_column = getattr(AreaModel, sort_by)
 
     if order == "desc":
@@ -69,10 +68,9 @@ async def get_areas_sort(
     else:
         query = query.order_by(asc(order_by_column))
 
-    query = query.offset(skip).limit(limit)
-
     try:
-        areas = query.all()
+        areas = query.offset(skip).limit(limit).all()
+
         if areas == None:
             raise HTTPException(status_code=404, detail="Area no encontrada")
         
@@ -88,10 +86,9 @@ async def get_areas_sort(
     
     return JSONResponse(content=content, headers=HEADERS)
 
-# TODO realizar busqueda por estado y por id
 @router.get("/get-area/{id_area}", response_model=Area, status_code=200, description="Obtener área por el id")
 async def get_area(id_area:int = Path(ge=1), db: Session = Depends(get_db)):
-    area = db.query(AreaModel).filter(AreaModel.id_area == id_area).first()
+    area = db.query(AreaModel).filter_by(id_estado = EstadoEnum.ACTIVO, id_area = id_area).first()
     
     if area is None:
         raise HTTPException(status_code=404, detail="Area no encontrada")
@@ -99,10 +96,9 @@ async def get_area(id_area:int = Path(ge=1), db: Session = Depends(get_db)):
     area.estado = db.query(EstadoModel).filter(EstadoModel.id_estado == area.id_estado).first()
     return JSONResponse(content=jsonable_encoder(area), headers=HEADERS)
 
-# TODO realizar busqueda por estado y por nombre
 @router.get("/get-area-by-name/", response_model= Area, status_code=200, summary="Obtener área por nombre")
 async def get_area_by_name(name:str = Query(min_length=1, max_length=100), db: Session = Depends(get_db)):
-    area = db.query(AreaModel).filter(AreaModel.descripcion == name).first()
+    area = db.query(AreaModel).filter_by(id_estado = EstadoEnum.ACTIVO, descripcion = name).first()
 
     if area == None:
         raise HTTPException(status_code=404, detail="Area no encontrada")
@@ -119,22 +115,19 @@ async def create_area(area:AreaCreate, db: Session = Depends(get_db)):
     db_area.estado = db.query(EstadoModel).filter(EstadoModel.id_estado == db_area.id_estado).first()
     return JSONResponse(content=jsonable_encoder(db_area), headers=HEADERS, status_code=201)
 
-# TODO realizar busqueda por estado y por id
 @router.patch("/update-area/{id_area}", response_model=Area, status_code=200, description="Actualizar área", summary="Actualizar área")
 async def update_area(id_area:int, area:AreaCreate, db: Session = Depends(get_db)):
-    db_area = db.query(AreaModel).filter(AreaModel.id_area == id_area).first()
+    db_area = db.query(AreaModel).filter_by(id_estado = EstadoEnum.ACTIVO, id_area = id_area).first()
 
     if db_area is None:
         raise HTTPException(status_code=404,detail="Area no encontrada")
     
     db_area.descripcion = area.descripcion
-    db_area.estado = db.query(EstadoModel).filter(EstadoModel.id_estado == db_area.id_estado).first()
     db.commit()
     db.refresh(db_area)
     db_area.estado = db.query(EstadoModel).filter(EstadoModel.id_estado == db_area.id_estado).first()
     return JSONResponse(content=jsonable_encoder(db_area), headers=HEADERS, status_code=200)
         
-# TODO realizar busqueda por estado y por id
 @router.delete("/delete-area/{id_area}", status_code=200, description="Eliminar área", summary="Eliminar área")
 async def deleteArea(id_area:int = Path(...,ge=1), db: Session = Depends(get_db)):
     db_area = db.query(AreaModel).filter_by(id_estado = EstadoEnum.ACTIVO, id_area = id_area).first()

@@ -13,8 +13,10 @@ PASSWORD = os.getenv("PASSWORD")
 HOST = os.getenv("HOST")
 PORT = os.getenv("PORT")
 DATABASE = os.getenv("DATABASE")
+DRIVE = os.getenv("DRIVE")
+DATABASE_MANAGER = os.getenv("DATABASE_MANAGER")
 
-DATABASE_URL = f"mssql+pyodbc://{USER_NAME}:{PASSWORD}@{HOST}:{PORT}/{DATABASE}?driver=ODBC+Driver+17+for+SQL+Server"
+DATABASE_URL = f"{DATABASE_MANAGER}://{USER_NAME}:{PASSWORD}@{HOST}:{PORT}/{DATABASE}?driver={DRIVE}"
 
 engine = create_engine(DATABASE_URL)
 

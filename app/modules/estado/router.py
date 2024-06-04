@@ -3,7 +3,7 @@ from fastapi.responses import JSONResponse
 from fastapi.encoders import jsonable_encoder
 from sqlalchemy.orm import Session
 from typing import List
-from database import get_db
+from config import get_db
 
 from .shema import Estado
 from .service import EstadoServices

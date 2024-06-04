@@ -19,9 +19,7 @@ DATABASE_MANAGER = os.getenv("DATABASE_MANAGER")
 DATABASE_URL = f"{DATABASE_MANAGER}://{USER_NAME}:{PASSWORD}@{HOST}:{PORT}/{DATABASE}?driver={DRIVE}"
 
 engine = create_engine(DATABASE_URL)
-
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
-
 Base = declarative_base()
 
 # Dependency para obtener la sesión de la base de datos

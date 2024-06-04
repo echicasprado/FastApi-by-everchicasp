@@ -1,6 +1,6 @@
 from sqlalchemy import Column, Integer, String
 from sqlalchemy.orm import relationship
-from database import Base
+from config import Base
 
 class EstadoModel(Base):
     __tablename__ = "TBL_ESTADO"

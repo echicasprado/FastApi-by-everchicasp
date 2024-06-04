@@ -33,8 +33,8 @@ app.include_router(jwt_router)
 app.include_router(estado_router)
 app.include_router(area_router)
 
-def start_server():
-    uvicorn.run("main:app",host="0.0.0.0",port=int(os.environ.get("PORT",8080)),log_level="debug",reload=True)
+# def start_server():
+#     uvicorn.run("main:app",host="0.0.0.0",port=int(os.environ.get("PORT",8080)),log_level="debug",reload=True)
 
-if __name__ == "__main__":
-    start_server()
+# if __name__ == "__main__":
+#     start_server()

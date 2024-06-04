@@ -1,5 +1,5 @@
-pip install fastapi 
-pip install uvicorn 
-pip install sqlalchemy 
-pip install pyodbc
-pip install python-dotenv
+fastapi 
+uvicorn 
+sqlalchemy 
+pyodbc
+python-dotenv

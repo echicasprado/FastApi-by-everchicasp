@@ -3,3 +3,4 @@ uvicorn
 sqlalchemy 
 pyodbc
 python-dotenv
+pyjwt

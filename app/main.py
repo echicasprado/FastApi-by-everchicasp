@@ -1,6 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from modules import *
+from middleware import ErrorHandler
 
 BASE_URL="info-projects"
 
@@ -22,6 +23,7 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+app.add_middleware(ErrorHandler)
 
 
 app.include_router(jwt_router)

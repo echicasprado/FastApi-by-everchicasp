@@ -2,6 +2,8 @@ from sqlalchemy import Column, Integer, String, ForeignKey
 from sqlalchemy.orm import relationship
 from database import Base
 
+from modules.estado import EstadoModel
+
 class AreaModel(Base):
     __tablename__ = "TBL_AREA"
 

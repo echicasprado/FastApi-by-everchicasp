@@ -1,6 +1,6 @@
 from fastapi import FastAPI
-from routers import *
 from fastapi.middleware.cors import CORSMiddleware
+from modules import *
 
 BASE_URL="info-projects"
 
@@ -24,6 +24,6 @@ app.add_middleware(
 )
 
 
-app.include_router(area_router)
+app.include_router(jwt_router)
 app.include_router(estado_router)
-app.include_router(usario_router)
+app.include_router(area_router)

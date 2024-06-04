@@ -1,7 +1,7 @@
 from sqlalchemy.orm import Session
 from typing import List
-from models import EstadoModel
-from shemas import Estado
+from .model import EstadoModel
+from .shema import Estado
 
 class EstadoServices():
     

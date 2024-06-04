@@ -5,8 +5,8 @@ from sqlalchemy.orm import Session
 from typing import List
 from database import get_db
 
-from shemas import Area, AreaCreate
-from services import AreaServices
+from .shema import Area, AreaCreate
+from .service import AreaServices
 
 HEADERS = {"Content-Type":"application/json","charset":"utf-8"}
 

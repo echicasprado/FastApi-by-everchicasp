@@ -5,8 +5,8 @@ from sqlalchemy.orm import Session
 from typing import List
 from database import get_db
 
-from shemas import Estado
-from services import EstadoServices
+from .shema import Estado
+from .service import EstadoServices
 
 HEADERS = {"Content-Type":"application/json","charset":"utf-8"}
 

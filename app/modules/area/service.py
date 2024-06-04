@@ -2,8 +2,9 @@ from sqlalchemy.orm import Session
 from sqlalchemy import asc, desc
 from typing import List
 
-from models import AreaModel, EstadoModel
-from shemas import Area, AreaCreate, EstadoEnum
+from modules.estado import EstadoEnum, EstadoModel
+from .model import AreaModel
+from .shema import Area, AreaCreate
 
 class AreaServices():
 

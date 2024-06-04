@@ -1,7 +1,8 @@
 from fastapi import APIRouter, Depends
 from fastapi.responses import JSONResponse
 
-from shemas import Usuario, JWT_Bearer
+from ..usuario import Usuario
+from .shema import JWT_Bearer
 from middleware import create_token
 
 router = APIRouter(

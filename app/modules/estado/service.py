@@ -5,7 +5,7 @@ from .shema import Estado
 
 class EstadoServices():
 
-    def get_estados(db) -> List[Estado]:
+    def get_estados(db:Session) -> List[Estado]:
         return db.query(EstadoModel).all()
     
     

@@ -4,10 +4,6 @@ from fastapi.middleware.cors import CORSMiddleware
 from modules import *
 from middleware import ErrorHandler
 
-import uvicorn
-
-BASE_URL="info-projects"
-
 origins = [
     "http://localhost",
     "http://localhost:8000",

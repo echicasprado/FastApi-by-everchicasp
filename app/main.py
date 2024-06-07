@@ -3,6 +3,9 @@ from fastapi.middleware.cors import CORSMiddleware
 from modules import *
 from middleware import ErrorHandler
 
+
+#FIXME Create all table from sqlalchemy
+
 origins = [
     "http://localhost",
     "http://localhost:8000",

@@ -35,5 +35,10 @@ pm2 start "uvicorn main:app --host 0.0.0.0 --port 8000" --name my-info-projects-
 ```
 
 ### Docker
+
 ```
+docker build -f Dockerfile.dev -t info-projects-dev .
+docker build -t info-projects-prod .
+
+docker run --name info-dev -p 8000:8000  -v $(pwd):/app info-projects-dev
 ```

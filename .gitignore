@@ -160,4 +160,4 @@ cython_debug/
 #.idea/
 
 # Virtual Env python
-.info-projects/*
+info-projects/

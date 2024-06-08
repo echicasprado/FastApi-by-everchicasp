@@ -1,5 +1,7 @@
 version: '3.8'
 
+#FIXME Investigar si es posible usar un docker que ya esta construido
+
 services:
   fastapi:
     build:

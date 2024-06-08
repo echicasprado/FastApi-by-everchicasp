@@ -2,9 +2,10 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from modules import *
 from middleware import ErrorHandler
+from config import Base, engine
 
 
-#FIXME Create all table from sqlalchemy
+#FIXME crear tablas de base de datos
 
 origins = [
     "http://localhost",
@@ -30,3 +31,5 @@ app.add_middleware(ErrorHandler)
 app.include_router(jwt_router)
 app.include_router(estado_router)
 app.include_router(area_router)
+
+Base.metadata.create_all(bind=engine)

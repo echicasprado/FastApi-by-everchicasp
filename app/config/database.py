@@ -4,6 +4,8 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 from dotenv import load_dotenv
 
+#FIXME Investigar como crear la base de datos y sus tablas con el orm
+
 # Cargar las variables de entorno desde el archivo .env
 load_dotenv()
 

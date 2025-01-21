@@ -1,0 +1,27 @@
+version: '3.8'
+
+services:
+  fastapi:
+    build:
+      context: .
+    ports:
+      - "4000:4000"
+    environment:
+      - USER_NAME=${USER_NAME}
+      - PASSWORD=${PASSWORD}
+      - HOST=${HOST}
+      - PORT=${PORT}
+      - DATABASE=${DATABASE}
+      - DRIVE=${DRIVE}
+      - DATABASE_MANAGER=${DATABASE_MANAGER}
+      - MY_KEY=${MY_KEY}
+    depends_on:
+      - sqlserver
+
+  sqlserver:
+    image: mcr.microsoft.com/mssql/server:2019-latest
+    environment:
+      ACCEPT_EULA: "Y"
+      SA_PASSWORD: ${PASSWORD}
+    ports:
+      - "1433:1433"

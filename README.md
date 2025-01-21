@@ -22,4 +22,4 @@ pip install -r requirements.txt
 ### Levantar proyecto con pm2
 ```
 pm2 start "uvicorn main:app --host 0.0.0.0 --port 8000" --name my-info-projects-api
-```
+'''
